@@ -1,14 +1,14 @@
-FROM node:20-alpine
+# Node + FFmpeg
+FROM node:20-bookworm
 
-# ffmpeg
-RUN apk add --no-cache ffmpeg
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY package.json ./
-RUN npm i --omit=dev
-
+COPY package*.json ./
+RUN npm ci --omit=dev || npm install --omit=dev
 COPY . .
-ENV PORT=8080
-EXPOSE 8080
 
+ENV PORT=8000
+EXPOSE 8000
 CMD ["npm","start"]
